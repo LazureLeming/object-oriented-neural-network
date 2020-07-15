@@ -11,13 +11,19 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static neuralnetwork.helpers.ListOperations.createListOfObjects;
-import static neuralnetwork.helpers.ListOperations.runNeuralOperationConcurrently;
 
 /**
  * Object-oriented Neural Network.
+ *
+ * @author Paweł Rutkowski S18277
+ * @see Neuron
+ * @see InputNeuron
+ * @see OutputNeuron
  */
 public class NeuralNetwork implements Serializable {
 
@@ -27,7 +33,7 @@ public class NeuralNetwork implements Serializable {
     private final List<OutputNeuron> outputLayer = new ArrayList<>();
 
     /**
-     * Default constructor. Creates and connects all neurons together.
+     * Only constructor. Creates and connects all neurons together.
      *
      * @param numberOfInputs                number of network inputs
      * @param numberOfOutputs               number of network outputs
@@ -54,28 +60,30 @@ public class NeuralNetwork implements Serializable {
      */
     public List<Double> calculateResponse(final List<Double> inputs) {
         setInputLayerValues(inputs);
-        neurons.forEach(neuralLayer -> runNeuralOperationConcurrently(neuralLayer, Neuron::calculateResponse));
+        neurons.forEach(neuralLayer -> neuralLayer.forEach(Neuron::calculateResponse));
         return outputLayer.stream().map(Neuron::getResponse).collect(toList());
     }
 
     /**
-     * Method allowing neural network to be trained based on inputs and expected
-     * values. Inputs size has to match network inputs size, otherwise
-     * {@link IllegalArgumentException} is thrown. Expected values list size has to
-     * match network outputs size, otherwise {@link IllegalArgumentException} is
-     * thrown.
+     * Method allowing neural network to be trained based on inputs, expected values
+     * and passed learning rate of neurons. Inputs size has to match network inputs
+     * size, otherwise {@link IllegalArgumentException} is thrown. Expected values
+     * list size has to match network outputs size, otherwise
+     * {@link IllegalArgumentException} is thrown.
      *
      * @param inputs         list consisting of input values as doubles (input
      *                       vector)
      * @param expectedValues list consisting of expected outputs for each output
      *                       neuron (expected response vector)
-     * @return sum of total errors of each output neurons
+     * @param learningRate   rate at which neurons adjust their weights - before
+     *                       adjustments error is multiplied by this value
+     * @return list of errors from output layer
      */
-    public double train(final List<Double> inputs, final List<Double> expectedValues) {
+    public List<Double> train(final List<Double> inputs, final List<Double> expectedValues, final double learningRate) {
         setExpectedResponses(expectedValues);
         calculateResponse(inputs);
-        backpropagateErrorsAndAdjustWeights();
-        return outputLayer.stream().mapToDouble(OutputNeuron::getAbsoluteError).sum();
+        backpropagateErrorsAndAdjustWeights(learningRate);
+        return outputLayer.stream().map(Neuron::getError).collect(Collectors.toList());
     }
 
     private void initializeInputLayer(final int numberOfInputs) {
@@ -145,11 +153,15 @@ public class NeuralNetwork implements Serializable {
         }
     }
 
-    private void backpropagateErrorsAndAdjustWeights() {
+    private void backpropagateErrorsAndAdjustWeights(final double learningRate) {
         Collections.reverse(neurons);
-        neurons.forEach(neuralLayer -> runNeuralOperationConcurrently(neuralLayer, Neuron::calculateError));
-        neurons.forEach(neuralLayer -> runNeuralOperationConcurrently(neuralLayer, Neuron::adjustWeights));
+        neurons.forEach(neuralLayer -> neuralLayer.forEach(Neuron::calculateError));
+        neurons.forEach(neuralLayer -> neuralLayer.forEach(neuron -> neuron.adjustWeights(learningRate)));
         Collections.reverse(neurons);
+    }
+
+    private static <T> List<T> createListOfObjects(final int numberOfElements, final Supplier<T> objectSupplier) {
+        return Stream.generate(objectSupplier).limit(numberOfElements).collect(toList());
     }
 
 }

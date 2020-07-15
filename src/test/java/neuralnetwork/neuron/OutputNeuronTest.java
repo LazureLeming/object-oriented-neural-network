@@ -25,11 +25,4 @@ class OutputNeuronTest {
         assertEquals(expectedValue - response, calculatedError);
     }
 
-    @Test void testGetAbsoluteError() {
-        final double negativeValue = -1;
-        when(outputNeuron.getError()).thenReturn(negativeValue);
-        final double absoluteError = outputNeuron.getAbsoluteError();
-        assertEquals(-negativeValue, absoluteError);
-    }
-
 }

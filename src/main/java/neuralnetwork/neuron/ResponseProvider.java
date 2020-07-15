@@ -1,8 +1,11 @@
 package neuralnetwork.neuron;
 
 /**
- * Interface providing accessing neuron response functionality. Used for getting
- * responsed from neurons in previous layers of the network.
+ * Interface providing accessing neuron response functionality. <br>
+ * <br>
+ * Used for getting responses from neurons in previous layers of the network.
+ *
+ * @author Paweł Rutkowski S18277
  */
 public interface ResponseProvider {
 

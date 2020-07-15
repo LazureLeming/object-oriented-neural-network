@@ -7,12 +7,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.IntStream;
 
-import static neuralnetwork.helpers.MathematicalFunction.randomValueBetween;
-import static neuralnetwork.helpers.MathematicalFunction.sigmoid;
+import static neuralnetwork.helpers.MathOperations.randomValueBetween;
+import static neuralnetwork.helpers.MathOperations.sigmoid;
+import static neuralnetwork.helpers.MathOperations.squareValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MathematicalFunctionTest {
+public class MathOperationsTest {
 
     @Test void testSigmoid() {
         final double resultAccuracy = 0.0001;
@@ -31,4 +32,15 @@ public class MathematicalFunctionTest {
         assertTrue(Collections.min(randomValues) >= lowerBound);
         assertTrue(Collections.max(randomValues) <= upperBound);
     }
+
+    @Test void testSquareValue() {
+        final double resultAccuracy = 0.0000001;
+        assertEquals(4, squareValue(2), resultAccuracy);
+        assertEquals(9, squareValue(3), resultAccuracy);
+        assertEquals(16, squareValue(4), resultAccuracy);
+        assertEquals(11.4921, squareValue(3.39), resultAccuracy);
+        assertEquals(123.965956, squareValue(11.134), resultAccuracy);
+        assertEquals(7.38905609893, squareValue(Math.E), resultAccuracy);
+    }
+
 }

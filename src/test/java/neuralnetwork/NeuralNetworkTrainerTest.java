@@ -1,0 +1,5 @@
+package neuralnetwork;
+
+class NeuralNetworkTrainerTest {
+
+}

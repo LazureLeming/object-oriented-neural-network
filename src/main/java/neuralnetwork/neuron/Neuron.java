@@ -1,30 +1,30 @@
 package neuralnetwork.neuron;
 
-import neuralnetwork.helpers.MathematicalFunction;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static neuralnetwork.helpers.MathematicalFunction.randomValueBetween;
-import static neuralnetwork.helpers.MathematicalFunction.sigmoid;
+import neuralnetwork.helpers.MathOperations;
 
 /**
- * Neuron in neural network. Keeps information about previous neurons with
- * weights assigned to their connections and keeps information about next
- * neurons for backpropagatin errors.
+ * Basic neuron in neural network, used in hidden layers. <br>
+ * <br>
+ * Keeps information about previous neurons with weights assigned to their
+ * connections. Keeps information about next neurons for backpropagating errors.
+ *
+ * @author Paweł Rutkowski S18277
+ * @see nai.neuralnetwork.NeuralNetwork
  */
 public class Neuron implements ResponseProvider, Serializable {
 
     private static final long serialVersionUID = -6752725139822282832L;
     private static final double INITIAL_WEIGHT_ORIGIN = -0.1;
     private static final double INITIAL_WEIGHT_BOUND = 0.1;
-    private static final double LEARNING_RATE = 0.1;
     private final Map<ResponseProvider, Double> previousNeurons = new LinkedHashMap<>();
     private final List<Neuron> nextNeurons = new ArrayList<>();
-    private double bias = randomValueBetween(INITIAL_WEIGHT_ORIGIN, INITIAL_WEIGHT_BOUND);
+    private double bias = MathOperations.randomValueBetween(INITIAL_WEIGHT_ORIGIN, INITIAL_WEIGHT_BOUND);
     private transient double response = 0D;
     private transient double error = 0D;
 
@@ -36,8 +36,8 @@ public class Neuron implements ResponseProvider, Serializable {
      * @param neurons list of neurons in previous layer of the network
      */
     public void configurePreviousNeurons(final List<ResponseProvider> neurons) {
-        neurons.forEach(neuron -> previousNeurons.put(neuron,
-                randomValueBetween(INITIAL_WEIGHT_ORIGIN, INITIAL_WEIGHT_BOUND)));
+        neurons.forEach(
+                neuron -> previousNeurons.put(neuron, MathOperations.randomValueBetween(INITIAL_WEIGHT_ORIGIN, INITIAL_WEIGHT_BOUND)));
     }
 
     /**
@@ -52,14 +52,13 @@ public class Neuron implements ResponseProvider, Serializable {
 
     /**
      * Calculates this neuron's response based on responses from neurons in previous
-     * layer, weights associated to them, bias and sigmoid activation function
-     * {@link MathematicalFunction#sigmoid(double)}. Calculated response is assigned
-     * to {@link Neuron#response} field.
+     * layer, weights associated to them, bias and sigmoid activation function.
+     * Calculated response is assigned to {@link Neuron#response} field.
      */
     public void calculateResponse() {
         final double response = previousNeurons.entrySet().stream()
                 .map(entry -> entry.getKey().getResponse() * entry.getValue()).mapToDouble(Double::valueOf).sum();
-        this.response = sigmoid(response + bias);
+        this.response = MathOperations.sigmoid(response + bias);
     }
 
     /**
@@ -86,21 +85,40 @@ public class Neuron implements ResponseProvider, Serializable {
     /**
      * Adjusts weights for each connection based on calculated error, previous
      * neuron response and learning rate.
+     *
+     * @param learningRate learning rate used for training.
      */
-    public void adjustWeights() {
+    public void adjustWeights(final double learningRate) {
         previousNeurons.forEach((neuron, weight) -> previousNeurons.replace(neuron,
-                weight + (error * neuron.getResponse() * LEARNING_RATE)));
-        bias += error * LEARNING_RATE;
+                weight + (error * neuron.getResponse() * learningRate)));
+        bias += error * learningRate;
     }
 
+    /**
+     * Method returning calculated error.
+     *
+     * @return calculated error.
+     */
+    public double getError() {
+        return error;
+    }
+
+    /**
+     * Method calculating scaled error for given Neuron. Calculated by multiplying
+     * weight connecting given neuron and error.
+     *
+     * @param neuron neuron for which weight should be used in calculations
+     * @return scaled error for given neuron.
+     */
     double getScaledError(final ResponseProvider neuron) {
         return previousNeurons.get(neuron) * error;
     }
 
-    double getError() {
-        return error;
-    }
-
+    /**
+     * Error setter.
+     *
+     * @param error error value to set as error field.
+     */
     void setError(final double error) {
         this.error = error;
     }

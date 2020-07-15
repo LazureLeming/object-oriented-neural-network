@@ -1,9 +1,13 @@
 package neuralnetwork.neuron;
 
 /**
- * Neuron residing on the output layer of the network. Keeps information about
- * expected response of this specific neuron. Calculates network error
- * differently than neurons in hidden layers.
+ * Neuron residing on the output layer of the network. <br>
+ * <br>
+ * Keeps information about expected response of this specific neuron. Calculates
+ * network error differently than neurons in hidden layers.
+ *
+ * @author Paweł Rutkowski S18277
+ * @see nai.neuralnetwork.NeuralNetwork
  */
 public class OutputNeuron extends Neuron {
 
@@ -26,15 +30,6 @@ public class OutputNeuron extends Neuron {
     @Override
     public void calculateError() {
         setError(expectedResponse - getResponse());
-    }
-
-    /**
-     * Calculate absolute value of this neuron achieved error and returns it.
-     *
-     * @return absolute value of this neuron error.
-     */
-    public double getAbsoluteError() {
-        return Math.abs(getError());
     }
 
 }

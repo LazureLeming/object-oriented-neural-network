@@ -3,8 +3,13 @@ package neuralnetwork.neuron;
 import java.io.Serializable;
 
 /**
- * Pseudo-neuron acting as input to the network. Keeps only one input which is
- * passed without any alteration to further layers.
+ * Pseudo-neuron acting as input to the network. <br>
+ * <br>
+ * Keeps only one input which is passed without any alteration to further
+ * layers.
+ *
+ * @author Paweł Rutkowski S18277
+ * @see nai.neuralnetwork.NeuralNetwork
  */
 public class InputNeuron implements ResponseProvider, Serializable {
 

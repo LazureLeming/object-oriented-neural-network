@@ -2,9 +2,9 @@ package fakes;
 
 import mockit.Mock;
 import mockit.MockUp;
-import neuralnetwork.helpers.MathematicalFunction;
+import neuralnetwork.helpers.MathOperations;
 
-public class FakeMathematicalFunction extends MockUp<MathematicalFunction> {
+public class FakeMathOperations extends MockUp<MathOperations> {
 
     @Mock double sigmoid(final double input) {
         return input;

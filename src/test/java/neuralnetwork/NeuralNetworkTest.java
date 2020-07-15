@@ -37,7 +37,7 @@ class NeuralNetworkTest {
 
     @Test void testTrain() {
         final FakeOutputNeuron outputNeuron = new FakeOutputNeuron();
-        network.train(doubles, IntStream.range(0, NUMBER_OF_OUTPUTS).mapToObj(Double::valueOf).collect(toList()));
+        network.train(doubles, IntStream.range(0, NUMBER_OF_OUTPUTS).mapToObj(Double::valueOf).collect(toList()), 1);
         final int timesCalculateErrorCalledInHiddenLayer = fakeNeuron.timesCalculateErrorCalled();
         final int timesCalculateErrorCalledInOutputLayer = outputNeuron.timesCalculateErrorCalled();
         assertEquals(NUMBER_OF_NEURONS,
@@ -55,7 +55,7 @@ class NeuralNetworkTest {
     @Test void testTrainWithWrongSizeThrowsIllegalArgumentException() {
         final List<Double> incorrectInputSizeList = IntStream.range(0, NUMBER_OF_OUTPUTS - 1).mapToObj(Double::valueOf)
                 .collect(toList());
-        assertThrows(IllegalArgumentException.class, () -> network.train(doubles, incorrectInputSizeList));
+        assertThrows(IllegalArgumentException.class, () -> network.train(doubles, incorrectInputSizeList, 1));
     }
 
 }

@@ -1,7 +1,7 @@
 package neuralnetwork.neuron;
 
 import fakes.FakeMap;
-import fakes.FakeMathematicalFunction;
+import fakes.FakeMathOperations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ public class NeuronTest {
     private final double expectedResponse = BIAS + (previousNeurons.size() * RESPONSE);
 
     @BeforeEach void prepareNeuron() {
-        new FakeMathematicalFunction();
+        new FakeMathOperations();
         neuron = new Neuron();
         previousNeurons.forEach(mock -> when(mock.getResponse()).thenReturn(RESPONSE));
         nextNeurons.forEach(mock -> when(mock.getScaledError(any())).thenReturn(ERROR));
@@ -48,7 +48,7 @@ public class NeuronTest {
 
     @Test void testAdjustWeights() {
         final FakeMap<ResponseProvider, Double> map = new FakeMap<>();
-        neuron.adjustWeights();
+        neuron.adjustWeights(0);
         assertEquals(previousNeurons.size(), map.timeReplaceCalled());
     }
 
