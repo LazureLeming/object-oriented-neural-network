@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,8 +50,6 @@ public class NeuralNetwork implements Serializable {
     /**
      * Calculate network response based on given inputs. Inputs size has to match
      * network inputs size, otherwise {@link IllegalArgumentException} is thrown.
-     * Calculations for each layer are done concurrently using
-     * {@link CompletableFuture#runAsync(Runnable)} to speed-up processing time.
      *
      * @param inputs list consisting of input values as doubles (input vector)
      * @return list consisting of responses of each output layer neuron (output

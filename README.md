@@ -43,8 +43,6 @@ Network result can be calculated using `NeuralNetwork.calculateResponse(List<Dou
 
 It's taking `List<Double>` of inputs as argument and returns `List<Double>` containing responses from each output neuron.
 
-Calculations are done concurrently using [CompletableFuture](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html), which decreases time to perform all calculations quite significantly.
-
 ### Training the network
 Network can be trained using `NeuralNetwork.train(List<Double> inputs, List<Double> expectedValues)` method.
 
